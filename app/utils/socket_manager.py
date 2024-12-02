@@ -1,3 +1,4 @@
+from typing import Any
 import socketio
 from .config import ORCHESTRATOR_URL
 
@@ -14,24 +15,24 @@ sio = socketio.Client(
 # Define the connection URL for Socket.IO
 SOCKET_IO_URL = f"{ORCHESTRATOR_URL.replace('http', 'ws')}/socket.io"
 
-async def connect_socketio():
+def connect_socketio() -> None:
     """Connect the Socket.IO client to the orchestrator."""
     try:
         print(f"Attempting to connect to Socket.IO server at {SOCKET_IO_URL}/agent...")
-        await sio.connect(SOCKET_IO_URL, namespaces=['/agent'])
+        sio.connect(SOCKET_IO_URL, namespaces=['/agent'])
         print("Socket.IO connected successfully.")
     except Exception as e:
         print(f"Socket.IO connection failed: {e}")
 
 # Event handlers for Socket.IO
 @sio.event(namespace='/agent')
-def connect():
+def connect() -> None:
     print("Connected to Socket.IO server in the agent namespace.")
 
 @sio.event(namespace='/agent')
-def connect_error(data):
+def connect_error(data: Any) -> None:
     print(f"Connection failed with data: {data}")
 
 @sio.event(namespace='/agent')
-def disconnect():
+def disconnect() -> None:
     print("Disconnected from Socket.IO server in the agent namespace.")

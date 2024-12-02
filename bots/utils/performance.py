@@ -1,3 +1,4 @@
+import asyncio
 import time
 import functools
 from typing import Callable, TypeVar, Any
@@ -15,7 +16,7 @@ def measure_step(func: Callable[[T, Any], Any]) -> Callable[[T, Any], Any]:
             await asyncio.sleep(1)
             pre_scrieenshot_base64 = await self.capture_screenshot()
             pre_message = f"Step {step_name} started."
-            await self.send_run_event(message=pre_message, screenshot=pre_scrieenshot_base64, payload={'step_name': step_name})
+            await self.send_run_event(event_type="pre-step-report", message=pre_message, screenshot=pre_scrieenshot_base64, payload={'step_name': step_name})
 
             result = await func(self, *args, **kwargs)
             end_time = time.time()
@@ -30,7 +31,7 @@ def measure_step(func: Callable[[T, Any], Any]) -> Callable[[T, Any], Any]:
                 'duration': duration,
                 'metrics': metrics
             }
-            await self.send_run_event(message=post_message, screenshot=post_screenshot_base64, payload=payload)
+            await self.send_run_event(event_type="post-step-report", message=post_message, screenshot=post_screenshot_base64, payload=payload)
 
             return result
         except Exception as e:
