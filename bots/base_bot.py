@@ -1,13 +1,13 @@
 import base64
 import os
-import sys
 import time
-import signal
+import psutil
+
 from abc import ABC, abstractmethod
 from typing import Any, Optional
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-import psutil
+from selenium.webdriver.common.desired_capabilities import DesiredCapabilities
 from selenium.webdriver.chrome.webdriver import WebDriver
 
 from app.models import CreateRunEvent, CreateRunLog, LogLevel
@@ -16,11 +16,12 @@ from .utils.navigation import click_element, input_text, wait_for_element
 from app.utils.run_communicator import RunCommunicator
 
 class BaseBot(ABC):
-    def __init__(self, run_id: str, communicator: RunCommunicator) -> None:
+    def __init__(self, run_id: str, communicator: RunCommunicator, selenium_remote_url: str) -> None:
         self.run_id = run_id
         self.start_time = time.time()
 
         self.communicator: RunCommunicator = communicator
+        self.selenium_remote_url = selenium_remote_url
         self.logger = None
         self.driver: WebDriver = self._get_driver()
 
@@ -32,7 +33,12 @@ class BaseBot(ABC):
         options.add_argument('--disable-gpu')
         options.add_argument('--window-size=1920,1080')
 
-        driver = webdriver.Chrome(options=options)
+        driver = webdriver.Remote(
+            command_executor=self.selenium_remote_url,
+            desired_capabilities=DesiredCapabilities.CHROME.copy(),
+            options=options
+        )
+
         return driver
 
     @abstractmethod

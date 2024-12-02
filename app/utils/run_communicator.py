@@ -18,7 +18,6 @@ class RunCommunicator:
             log_data = data.dict()
             log_data['run_id'] = self.run_id
             sio.emit('run_log', log_data, namespace='/agent')
-            print(f"[Communicator] Log sent: {log_data}")
         else:
             print("Socket.IO not connected. Log not sent.")
 
@@ -27,13 +26,11 @@ class RunCommunicator:
             event_data = data.dict()
             event_data['run_id'] = self.run_id
             sio.emit('run_event', event_data, namespace='/agent')
-            print(f"[Communicator] Event sent: {event_data}")
         else:
             print("Socket.IO not connected. Event not sent.")
 
     async def update_run_status(self, status: RunStatus) -> None:
         if sio.connected:
             sio.emit('update_run_status', {"run_id": self.run_id, "status": status}, namespace='/agent')
-            print(f"[Communicator] Run status update sent: {status}")
         else:
             print("Socket.IO not connected. Status not updated.")

@@ -1,5 +1,6 @@
 from typing import Optional
 from app.models import AgentStatus, CreateRunEvent, RunStatus
+from app.utils.config import SELENIUM_REMOTE_URL
 from bots.base_bot import BaseBot
 from bots.complex_bot import ComplexBot
 from bots.google_bot import GoogleBot
@@ -22,9 +23,9 @@ class BotExecutor:
 
         try:
             if bot_script == "google_bot":
-                self.current_bot = GoogleBot(run_id=run_id, communicator=communicator)
+                self.current_bot = GoogleBot(run_id=run_id, communicator=communicator, selenium_remote_url=SELENIUM_REMOTE_URL)
             elif bot_script == "complex_bot":
-                self.current_bot = ComplexBot(run_id=run_id, communicator=communicator)
+                self.current_bot = ComplexBot(run_id=run_id, communicator=communicator, selenium_remote_url=SELENIUM_REMOTE_URL)
             else:
                 await update_run_status(run_id, RunStatus.ERROR)
                 await send_agent_log(f"Bot script {bot_script} not found.")

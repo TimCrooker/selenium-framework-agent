@@ -38,7 +38,6 @@ async def send_run_log(run_id: str, data: CreateRunLog) -> None:
         log_data = data.dict()
         log_data['run_id'] = run_id
         sio.emit('run_log', log_data, namespace='/agent')
-        print(f"Log sent: {log_data}")
     else:
         print("Socket.IO not connected. Log not sent.")
 
@@ -47,21 +46,18 @@ async def send_run_event(run_id: str, data: CreateRunEvent) -> None:
         event_data = data.dict()
         event_data['run_id'] = run_id
         sio.emit('run_event', event_data, namespace='/agent')
-        print(f"Event sent: {event_data}")
     else:
         print("Socket.IO not connected. Event not sent.")
 
 async def update_run_status(run_id: str, status: RunStatus) -> None:
     if sio.connected:
         sio.emit('update_run_status', {'run_id': run_id, 'status': status.value}, namespace='/agent')
-        print(f"Run status update sent: {status}")
     else:
         print("Socket.IO not connected. Run status not sent.")
 
 async def send_agent_log(log_message: str) -> None:
     if sio.connected:
         sio.emit('agent_log', {'agent_id': AGENT_ID, 'log': log_message}, namespace='/agent')
-        print(f"Agent log update sent: {log_message}")
     else:
         print("Socket.IO not connected. Agent log update not sent.")
 
@@ -72,14 +68,12 @@ async def update_agent_status(status: AgentStatus) -> None:
             "status": status.value,
         }
         sio.emit('agent_status_update', payload, namespace='/agent')
-        print(f"Agent status update sent: {status}")
     else:
         print("Socket.IO not connected. Agent status not sent.")
 
 async def send_heartbeat(status: AgentStatus) -> None:
     if sio.connected:
         sio.emit('agent_heartbeat', {'agent_id': AGENT_ID, "status": status.value}, namespace='/agent')
-        print("Heartbeat sent")
     else:
         print("Socket.IO not connected. Heartbeat not sent.")
         connect_socketio()
