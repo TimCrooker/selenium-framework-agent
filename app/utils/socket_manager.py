@@ -19,7 +19,7 @@ def connect_socketio() -> None:
     """Connect the Socket.IO client to the orchestrator."""
     try:
         print(f"Attempting to connect to Socket.IO server at {SOCKET_IO_URL}/agent...")
-        sio.connect(SOCKET_IO_URL, namespaces=['/agent'])
+        sio.connect(SOCKET_IO_URL, namespaces=['/agent'], transports=['websocket'])
         print("Socket.IO connected successfully.")
     except Exception as e:
         print(f"Socket.IO connection failed: {e}")

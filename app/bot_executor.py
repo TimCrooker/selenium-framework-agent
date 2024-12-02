@@ -18,7 +18,6 @@ class BotExecutor:
         await send_agent_log(f"Running bot script: {bot_script}")
         communicator = RunCommunicator(run_id)
         await update_run_status(run_id, RunStatus.RUNNING)
-        await send_run_event(run_id=run_id, data=CreateRunEvent(event_type="bot_started", message="Bot script started."))
         await update_agent_status(AgentStatus.BUSY)
 
         try:
