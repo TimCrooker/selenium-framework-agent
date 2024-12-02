@@ -5,7 +5,7 @@ import asyncio
 from app.models import AgentStatus, CreateRunEvent, CreateRunLog, RunStatus
 
 from .config import ORCHESTRATOR_URL, AGENT_ID
-from .socket_manager import sio
+from .socket_manager import connect_socketio, sio
 
 # API Communication
 
@@ -82,3 +82,4 @@ async def send_heartbeat(status: AgentStatus) -> None:
         print("Heartbeat sent")
     else:
         print("Socket.IO not connected. Heartbeat not sent.")
+        connect_socketio()
